@@ -9,7 +9,7 @@ import {Avatar, Badge, Breadcrumb, Button, Layout, Menu, Popconfirm, Table, Tag,
 import React, { useState, useEffect } from 'react';
 import {deleteStudent, getAllStudents} from "./client";
 import StudentDrawerForm from "./StudentDrawerForm";
-import {successNotification} from "./Notification";
+import {errorNotification, successNotification} from "./Notification";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -56,6 +56,14 @@ const App = () => {
         deleteStudent(studentId).then( () => {
             successNotification("Student deleted", `Student with id: ${studentId} is deleted`)
             callback()
+        }).catch(err => {
+            console.log(err.response)
+            err.response.json().then(res => {
+                console.log(res);
+                errorNotification("There was an issue",
+                    `${res.message}[${res.status}] [${res.error}]`)
+
+            })
         })
     }
     const columns = fetchStudents => [
@@ -107,8 +115,16 @@ const App = () => {
             .then(data => {
                 console.log(data);
                 setStudents(data);
-                setFetching(false);
-            })
+
+            }).catch(err => {
+                console.log(err.response)
+                err.response.json().then(res => {
+                    console.log(res);
+                    errorNotification("There was an issue",
+                        `${res.message}[${res.status}] [${res.error}]`)
+
+                })
+            }).finally(() =>  setFetching(false) )
 
     useEffect(() => {
         console.log("component is mounted");

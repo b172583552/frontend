@@ -2,7 +2,7 @@ import {LoadingOutlined, PlusOutlined} from '@ant-design/icons';
 import {Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, Spin} from 'antd';
 import React, { useState } from 'react';
 import {addNewStudent} from "./client";
-import {successNotification} from "./Notification";
+import {errorNotification, successNotification} from "./Notification";
 const { Option } = Select;
 const StudentDrawerForm = ({showDrawer, setShowDrawer, fetchStudents}) => {
     const [submitting, setSubmitting] = useState(false);
@@ -27,6 +27,11 @@ const StudentDrawerForm = ({showDrawer, setShowDrawer, fetchStudents}) => {
             }
             ).catch(err => {
                 console.log(err);
+                err.response.json().then(res => {
+                    console.log(res);
+                    errorNotification("There was an issue",
+                        `${res.message} [${res.status}] [${res.error}]`)
+                })
             }).finally(()=> {
                 setSubmitting(false);
             }
