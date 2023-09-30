@@ -121,8 +121,8 @@ const App = () => {
                 err.response.json().then(res => {
                     console.log(res);
                     errorNotification("There was an issue",
-                        `${res.message}[${res.status}] [${res.error}]`)
-
+                        `${res.message}[${res.status}] [${res.error}]`,
+                        "bottomLeft")
                 })
             }).finally(() =>  setFetching(false) )
 
@@ -133,7 +133,14 @@ const App = () => {
 
     const renderStudents = students => {
         if (students.length <= 0){
-            return "no data available";
+            return <>
+                <Button type={"primary"} shape={"round"} icon={<DownloadOutlined/>} size={"large"} onClick={()=>setShowDrawer(!showDrawer)}>
+                    ADD STUDENT
+                </Button>
+                <StudentDrawerForm showDrawer={showDrawer} setShowDrawer={setShowDrawer} fetchStudents={fetchStudents}/>
+                <br/>
+                <>no data available</>
+            </>
         }
 
         return <>
